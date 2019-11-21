@@ -7,7 +7,6 @@
     </content>
     <orderEntry type="jdk" jdkName="10" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="org.apache.jena:jena-tdb2:3.13.1" level="project" />
-    <orderEntry type="library" exported="" name="net.sf.biweekly:biweekly:0.6.3" level="project" />
+    <orderEntry type="library" name="org.apache.jena:jena-tdb2:3.13.1" level="project" />
   </component>
 </module>

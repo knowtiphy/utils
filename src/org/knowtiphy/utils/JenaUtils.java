@@ -1,12 +1,5 @@
 package org.knowtiphy.utils;
 
-/**
- *
- * @author graham
- */
-
-import biweekly.property.DateEnd;
-import biweekly.property.DateStart;
 import org.apache.jena.datatypes.xsd.XSDDateTime;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
@@ -145,22 +138,6 @@ public class JenaUtils
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return cal;
-    }
-
-    public static Calendar fromDate(DateStart date)
-    {
-        Date d = new Date(date.getValue().getTime());
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
-        return cal;
-    }
-
-    public static Calendar fromDate(DateEnd date)
-    {
-        Date d = new Date(date.getValue().getTime());
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
         return cal;
     }
 
