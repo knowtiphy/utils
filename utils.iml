@@ -7,9 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="org.apache.jena:jena-arq:3.13.1" level="project" />
-    <orderEntry type="library" exported="" name="org.apache.jena:jena-core:3.13.1" level="project" />
-    <orderEntry type="library" exported="" name="com.sun.mail:javax.mail:1.6.2" level="project" />
+    <orderEntry type="library" exported="" name="org.apache.jena:jena-tdb2:3.13.1" level="project" />
     <orderEntry type="library" exported="" name="net.sf.biweekly:biweekly:0.6.3" level="project" />
   </component>
 </module>
