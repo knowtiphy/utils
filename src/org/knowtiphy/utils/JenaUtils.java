@@ -8,6 +8,7 @@ import org.apache.jena.rdf.model.NodeIterator;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
 
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author graham
@@ -28,15 +30,25 @@ public class JenaUtils
 	public static void printModel(Model model, String pre)
 	{
 		StmtIterator it = model.listStatements();
-		printModel(it, pre);
+		printModel(it, pre, x -> true);
 	}
 
-	public static void printModel(StmtIterator it, String pre)
+	public static void printModel(Model model, String pre, Predicate<Statement> predicate)
+	{
+		StmtIterator it = model.listStatements();
+		printModel(it, pre, predicate);
+	}
+
+	public static void printModel(StmtIterator it, String pre, Predicate<Statement> predicate)
 	{
 		while (it.hasNext())
 		{
-			System.err.print(pre + " ");
-			System.err.println(it.next());
+			var stmt = it.next();
+			if(predicate.test(stmt))
+			{
+				System.err.print(pre + " ");
+				System.err.println(stmt);
+			}
 		}
 	}
 
