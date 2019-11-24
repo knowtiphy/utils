@@ -13,7 +13,10 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -27,29 +30,27 @@ import java.util.function.Predicate;
  */
 public class JenaUtils
 {
-	public static void printModel(Model model, String pre)
-	{
-		StmtIterator it = model.listStatements();
-		printModel(it, pre, x -> true);
-	}
-
-	public static void printModel(Model model, String pre, Predicate<Statement> predicate)
-	{
-		StmtIterator it = model.listStatements();
-		printModel(it, pre, predicate);
-	}
-
 	public static void printModel(StmtIterator it, String pre, Predicate<Statement> predicate)
 	{
 		while (it.hasNext())
 		{
 			var stmt = it.next();
-			if(predicate.test(stmt))
+			if (predicate.test(stmt))
 			{
 				System.err.print(pre + " ");
 				System.err.println(stmt);
 			}
 		}
+	}
+
+	public static void printModel(Model model, String pre)
+	{
+		printModel(model.listStatements(), pre, x -> true);
+	}
+
+	public static void printModel(Model model, String pre, Predicate<Statement> predicate)
+	{
+		printModel(model.listStatements(), pre, predicate);
 	}
 
 	public static boolean checkUnique(NodeIterator stmts)
@@ -107,6 +108,11 @@ public class JenaUtils
 		return node.asLiteral().getBoolean();
 	}
 
+	public static boolean getB(Statement stmt)
+	{
+		return getB(stmt.getObject());
+	}
+
 	public static double getD(RDFNode node)
 	{
 		return node.asLiteral().getDouble();
@@ -139,14 +145,35 @@ public class JenaUtils
 		return node.asLiteral().getInt();
 	}
 
+	public static int getI(Statement stmt)
+	{
+		return getI(stmt.getObject());
+	}
+
 	public static String getS(RDFNode node)
 	{
 		return node.asLiteral().getString();
 	}
 
+	public static String getS(Statement stmt)
+	{
+		return getS(stmt.getObject());
+	}
+
 	public static byte[] getBytes(RDFNode node)
 	{
 		return (byte[]) node.asLiteral().getValue();
+	}
+
+	public static LocalDateTime getLDT(RDFNode node)
+	{
+		return ZonedDateTime.parse(node.asLiteral().getLexicalForm(),
+				DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+	}
+
+	public static LocalDate getLD(Statement s)
+	{
+		return fromDate((XSDDateTime) s.getObject().asLiteral().getValue());
 	}
 
 	public static void addSubClasses(Model model, String subClass, String superClass)
