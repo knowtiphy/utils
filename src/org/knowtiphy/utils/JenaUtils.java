@@ -25,12 +25,15 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 /**
  * @author graham
  */
 public class JenaUtils
 {
+	private static final Logger LOGGER = Logger.getLogger(JenaUtils.class.getName());
+
 	public static void printModel(StmtIterator it, String pre, Predicate<Statement> predicate)
 	{
 		while (it.hasNext())
@@ -38,8 +41,8 @@ public class JenaUtils
 			var stmt = it.next();
 			if (predicate.test(stmt))
 			{
-				System.err.print(pre + " ");
-				System.err.println(stmt);
+				System.out.print(pre + " ");
+				System.out.println(stmt);
 			}
 		}
 	}
@@ -52,6 +55,22 @@ public class JenaUtils
 	public static void printModel(Model model, String pre, Predicate<Statement> predicate)
 	{
 		printModel(model.listStatements(), pre, predicate);
+	}
+
+	public static String toString(String pre, Model model, Predicate<Statement> predicate)
+	{
+		StmtIterator it = model.listStatements();
+		StringBuilder builder = new StringBuilder();
+		while (it.hasNext())
+		{
+			var stmt = it.next();
+			if (predicate.test(stmt))
+			{
+				builder.append(pre).append(" ").append(stmt).append("\n");
+			}
+		}
+
+		return builder.toString();
 	}
 
 	public static boolean checkUnique(Iterator stmts)
