@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
  */
 public class OS
 {
-
 	private static final Pattern MAC_PATTERN = Pattern.compile(".*mac.*", Pattern.CASE_INSENSITIVE);
 	private static final Pattern WINDOWS_PATTERN = Pattern.compile(".*windows.*", Pattern.CASE_INSENSITIVE);
 
@@ -35,9 +34,7 @@ public class OS
 
 	private static boolean isKDE()
 	{
-		@SuppressWarnings("CallToSystemGetenv")
-		String kde = System.getenv("KDE_FULL_SESSION");
-		return kde != null;
+		return System.getenv("KDE_FULL_SESSION") != null;
 	}
 
 	public static Path getAppDir(Class<?> cls) throws IOException
@@ -65,7 +62,6 @@ public class OS
 			assert false;
 			return Paths.get("");
 		}
-
 
 		Files.createDirectories(dir);
 		return dir;

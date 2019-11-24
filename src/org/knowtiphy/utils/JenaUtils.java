@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
@@ -53,27 +54,7 @@ public class JenaUtils
 		printModel(model.listStatements(), pre, predicate);
 	}
 
-	public static boolean checkUnique(NodeIterator stmts)
-	{
-		if (!stmts.hasNext())
-		{
-			return false;
-		}
-		stmts.next();
-		return !stmts.hasNext();
-	}
-
-	public static boolean checkUnique(ResIterator stmts)
-	{
-		if (!stmts.hasNext())
-		{
-			return false;
-		}
-		stmts.next();
-		return !stmts.hasNext();
-	}
-
-	public static boolean checkUnique(StmtIterator stmts)
+	public static boolean checkUnique(Iterator stmts)
 	{
 		if (!stmts.hasNext())
 		{
@@ -138,6 +119,11 @@ public class JenaUtils
 		{
 			return defaultValue;
 		}
+	}
+
+	public static boolean has(Model model, String subject, String predicate)
+	{
+		return listObjectsOfProperty(model, subject, predicate).hasNext();
 	}
 
 	public static int getI(RDFNode node)
