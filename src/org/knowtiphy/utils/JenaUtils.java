@@ -59,8 +59,12 @@ public class JenaUtils
 
 	public static String toString(String pre, Model model, Predicate<Statement> predicate)
 	{
-		StmtIterator it = model.listStatements();
 		StringBuilder builder = new StringBuilder();
+		StmtIterator it = model.listStatements();
+		if (it.hasNext())
+		{
+			builder.append("\n");
+		}
 		while (it.hasNext())
 		{
 			var stmt = it.next();
