@@ -202,6 +202,11 @@ public class JenaUtils
 		return LocalDate.ofInstant(date.asCalendar().getTime().toInstant(), ZoneId.systemDefault());
 	}
 
+	public static <T> T single(ResultSet resultSet, Function<QuerySolution, T> f)
+	{
+		return f.apply(resultSet.next());
+	}
+
 	public static <T> Set<T> set(ResultSet resultSet, Function<QuerySolution, T> f)
 	{
 		Set<T> result = new HashSet<>();
