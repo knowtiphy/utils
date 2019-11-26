@@ -12,13 +12,10 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -174,13 +171,13 @@ public class JenaUtils
 		return (byte[]) node.asLiteral().getValue();
 	}
 
-	public static LocalDateTime getLDT(RDFNode node)
+	public static ZonedDateTime getLDT(RDFNode node)
 	{
 		return ZonedDateTime.parse(node.asLiteral().getLexicalForm(),
-				DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+				DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(ZoneId.systemDefault());
 	}
 
-	public static LocalDate getLD(Statement s)
+	public static ZonedDateTime getLD(Statement s)
 	{
 		return fromDate((XSDDateTime) s.getObject().asLiteral().getValue());
 	}
@@ -190,16 +187,14 @@ public class JenaUtils
 		model.add(model.createResource(subClass), RDFS.subClassOf, model.createResource(superClass));
 	}
 
-	public static Calendar fromDate(Date date)
+	public static GregorianCalendar fromDate(ZonedDateTime date)
 	{
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		return cal;
+		return GregorianCalendar.from(date);
 	}
 
-	public static LocalDate fromDate(XSDDateTime date)
+	public static ZonedDateTime fromDate(XSDDateTime date)
 	{
-		return LocalDate.ofInstant(date.asCalendar().getTime().toInstant(), ZoneId.systemDefault());
+		return ZonedDateTime.ofInstant(date.asCalendar().getTime().toInstant(), ZoneId.systemDefault());
 	}
 
 	public static <T> T single(ResultSet resultSet, Function<QuerySolution, T> f)
