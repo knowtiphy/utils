@@ -12,6 +12,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
 
+import java.io.PrintWriter;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +31,16 @@ import java.util.logging.Logger;
 public class JenaUtils
 {
 	private static final Logger LOGGER = Logger.getLogger(JenaUtils.class.getName());
+
+	public static void printModel(StmtIterator it, String pre, PrintWriter pw)
+	{
+		while (it.hasNext())
+		{
+			var stmt = it.next();
+			pw.print(pre + " ");
+			pw.println(stmt);
+		}
+	}
 
 	public static void printModel(StmtIterator it, String pre, Predicate<Statement> predicate)
 	{
