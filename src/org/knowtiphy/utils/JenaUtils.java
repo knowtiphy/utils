@@ -179,7 +179,7 @@ public class JenaUtils
 
 	public static ZonedDateTime getLD(Statement s)
 	{
-		return fromDate((XSDDateTime) s.getObject().asLiteral().getValue());
+		return getLDT(s.getObject());
 	}
 
 	public static void addSubClasses(Model model, String subClass, String superClass)
