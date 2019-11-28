@@ -1,6 +1,6 @@
 package org.knowtiphy.utils;
 
-public interface IProcedure
+public interface IProcedure<E extends  Exception>
 {
-	void call();
+	void call() throws E;
 }
