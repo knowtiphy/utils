@@ -19,7 +19,7 @@ public class LoggerUtils
 		}
 	}
 
-	public static String exceptionMessage(Exception ex)
+	public static String exceptionMessage(Throwable ex)
 	{
 		StringWriter sw = new StringWriter();
 		ex.printStackTrace(new PrintWriter(sw));
