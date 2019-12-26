@@ -19,57 +19,125 @@ import java.util.regex.Pattern;
  */
 public class OS
 {
+	private static final Pattern LINUX_PATTERN = Pattern.compile("linux.*", Pattern.CASE_INSENSITIVE);
 	private static final Pattern MAC_PATTERN = Pattern.compile(".*mac.*", Pattern.CASE_INSENSITIVE);
 	private static final Pattern WINDOWS_PATTERN = Pattern.compile(".*windows.*", Pattern.CASE_INSENSITIVE);
 
+	private static final String PLASMA = "plasma";
+	private static final String GNOME = "gnome";
+
+	private static String osName()
+	{
+		return System.getProperty("os.name");
+	}
+
+	private static String home()
+	{
+		return System.getProperty("user.home");
+	}
+
 	private static boolean isMac()
 	{
-		return MAC_PATTERN.matcher(System.getProperty("os.name")).matches();
+		return MAC_PATTERN.matcher(osName()).matches();
 	}
 
 	private static boolean isWindows()
 	{
-		return WINDOWS_PATTERN.matcher(System.getProperty("os.name")).matches();
+		return WINDOWS_PATTERN.matcher(osName()).matches();
+	}
+
+	private static boolean isLinux()
+	{
+		return LINUX_PATTERN.matcher(osName()).matches();
 	}
 
 	private static boolean isKDE()
 	{
-		return System.getenv("KDE_FULL_SESSION") != null;
+		return System.getenv("DESKTOP_SESSION").equals(PLASMA);
 	}
 
-	public static Path getAppDir(Class<?> cls) throws IOException
+	private static boolean isGnome()
 	{
-		String home = System.getProperty("user.home");
-		Path dir;
+		return System.getenv("DESKTOP_SESSION").equals(GNOME);
+	}
 
+	private static String xdgDataHome()
+	{
+		String xdg = System.getenv("XDG_DATA_HOME");
+		return xdg == null || xdg.isEmpty() ? Paths.get(home(), ".local", "share").toString() : xdg;
+	}
+
+	private static String xdgConfigHome()
+	{
+		String xdg = System.getenv("XDG_CONFIG_HOME");
+		return xdg == null || xdg.isEmpty() ? Paths.get(home(), ".config").toString() : xdg;
+	}
+
+
+	public static Path getDataDir(Class<?> cls) throws IOException
+	{
+		String baseDirName = cls.getCanonicalName();
+
+		Path dir = null;
 		if (isMac())
 		{
-			dir = Paths.get(home, "Library", "Application Support", cls.getCanonicalName());
+			dir = Paths.get(home(), "Library", "Application Support", baseDirName);
 		}
 		else if (isWindows())
 		{
-			dir = Paths.get(home, "AppData", "Roaming", cls.getCanonicalName());
+			dir = Paths.get(home(), "AppData", "Roaming", baseDirName);
 		}
-		//	assume its Linux, is this how we check for KDE?
-		else if (isKDE())
+		else if (isLinux())
 		{
-			dir = Paths.get(home, ".kde", "share", "apps", cls.getCanonicalName());
+			if (isKDE() || isGnome())
+			{
+				dir = Paths.get(xdgDataHome(), baseDirName);
+			}
+			else
+			{
+				//	TODO -- something else
+				assert false;
+			}
 		}
-		else
-		{
-			//	assume it's gnome
-			//	TODO gnome
-			assert false;
-			return Paths.get("");
-		}
+
+		//	TODO -- something else
+		assert dir != null;
 
 		Files.createDirectories(dir);
 		return dir;
 	}
 
-	public static Path getAppFile(Class<?> cls, String fileName) throws IOException
+	public static Path getSettingsDir(Class<?> cls) throws IOException
 	{
-		return Paths.get(getAppDir(cls).toString(), fileName);
+		String baseDirName = cls.getCanonicalName();
+
+		Path dir = null;
+		if (isMac())
+		{
+			dir = Paths.get(home(), "Library", "Application Support", baseDirName);
+		}
+		else if (isWindows())
+		{
+			dir = Paths.get(home(), "AppData", "Roaming", baseDirName);
+		}
+		else if (isLinux())
+		{
+			if (isKDE() || isGnome())
+			{
+				dir = Paths.get(xdgConfigHome(), baseDirName);
+			}
+			else
+			{
+				//	TODO -- something else
+				assert false;
+			}
+		}
+
+		//	TODO -- something else
+		assert dir != null;
+
+		Files.createDirectories(dir);
+		return dir;
 	}
 
 	private static boolean browse(String url)
@@ -93,7 +161,7 @@ public class OS
 			{
 				Runtime.getRuntime().exec("open " + url);
 			}
-			else
+			else if (isLinux())
 			{
 				Runtime.getRuntime().exec("xdg-open " + url);
 			}
