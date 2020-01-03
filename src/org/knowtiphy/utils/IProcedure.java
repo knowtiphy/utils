@@ -4,7 +4,7 @@ public interface IProcedure<E extends Exception>
 {
 	void call() throws E;
 
-	static <T extends Exception> void doAndIgnore(IProcedure<T> procedure)
+	static void doAndIgnore(IProcedure<?> procedure)
 	{
 		try
 		{

@@ -10,6 +10,9 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+//	higher priorty numbers = higher priority so done first
+//	no ordering within priorities
+
 public class PriorityExecutor extends ThreadPoolExecutor
 {
 	public PriorityExecutor()
