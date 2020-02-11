@@ -69,3 +69,8 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
+/C1/build/
+/C1/dist/
+/JavaApplication3/nbproject/private/
+/JavaApplication3/build/
+/JavaApplication4/nbproject/private/

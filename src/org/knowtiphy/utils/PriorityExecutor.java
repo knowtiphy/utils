@@ -1,5 +1,8 @@
 package org.knowtiphy.utils;
 
+//	higher priorty numbers = higher priority so done first
+//	no ordering within priorities
+
 import java.util.Comparator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -10,41 +13,56 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-//	higher priorty numbers = higher priority so done first
-//	no ordering within priorities
-
 public class PriorityExecutor extends ThreadPoolExecutor
 {
+	private static final int INITIAL_QUEUE_CAPACITY = 10;
+
+	public PriorityExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit)
+	{
+		super(corePoolSize, maximumPoolSize, keepAliveTime, unit, new PriorityBlockingQueue<>(INITIAL_QUEUE_CAPACITY, new PriorityTaskComparator()));
+	}
+
+	public PriorityExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, ThreadFactory threadFactory)
+	{
+		super(corePoolSize, maximumPoolSize, keepAliveTime, unit, new PriorityBlockingQueue<>(INITIAL_QUEUE_CAPACITY, new PriorityTaskComparator()), threadFactory);
+	}
+
+	public PriorityExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, RejectedExecutionHandler handler)
+	{
+		super(corePoolSize, maximumPoolSize, keepAliveTime, unit, new PriorityBlockingQueue<>(INITIAL_QUEUE_CAPACITY, new PriorityTaskComparator()), handler);
+	}
+
+	public PriorityExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, ThreadFactory threadFactory, RejectedExecutionHandler handler)
+	{
+		super(corePoolSize, maximumPoolSize, keepAliveTime, unit, new PriorityBlockingQueue<>(INITIAL_QUEUE_CAPACITY, new PriorityTaskComparator()), threadFactory, handler);
+	}
+
 	public PriorityExecutor()
 	{
-		super(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
-				new PriorityBlockingQueue<>(11, new PriorityTaskComparator()));
+		this(1, 1, Integer.MAX_VALUE, TimeUnit.SECONDS);
 	}
 
 	public PriorityExecutor(final ThreadFactory threadFactory)
 	{
-		super(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
-				new PriorityBlockingQueue<>(11, new PriorityTaskComparator()), threadFactory);
+		this(1, 1, Integer.MAX_VALUE, TimeUnit.SECONDS, threadFactory);
 	}
 
 	public PriorityExecutor(final RejectedExecutionHandler handler)
 	{
-		super(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
-				new PriorityBlockingQueue<>(11, new PriorityTaskComparator()), handler);
+		this(1, 1, Integer.MAX_VALUE, TimeUnit.SECONDS, handler);
 	}
 
 	public PriorityExecutor(final ThreadFactory threadFactory, final RejectedExecutionHandler handler)
 	{
-		super(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
-				new PriorityBlockingQueue<>(11, new PriorityTaskComparator()), threadFactory, handler);
+		this(1, 1, Integer.MAX_VALUE, TimeUnit.SECONDS, threadFactory, handler);
 	}
 
 	@Override
 	protected <T> RunnableFuture<T> newTaskFor(final Callable<T> callable)
 	{
-		if (callable instanceof Important)
+		if (callable instanceof HasPriority)
 		{
-			return new PriorityTask<>(((Important) callable).getPriority(), callable);
+			return new PriorityTask<>(((HasPriority) callable).getPriority(), callable);
 		}
 		else
 		{
@@ -55,9 +73,9 @@ public class PriorityExecutor extends ThreadPoolExecutor
 	@Override
 	protected <T> RunnableFuture<T> newTaskFor(final Runnable runnable, final T value)
 	{
-		if (runnable instanceof Important)
+		if (runnable instanceof HasPriority)
 		{
-			return new PriorityTask<>(((Important) runnable).getPriority(), runnable, value);
+			return new PriorityTask<>(((HasPriority) runnable).getPriority(), runnable, value);
 		}
 		else
 		{
@@ -65,16 +83,11 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 	}
 
-	public interface Important
-	{
-		int getPriority();
-	}
-
 	private static final class PriorityTask<T> extends FutureTask<T> implements Comparable<PriorityTask<T>>
 	{
 		private final int priority;
 
-		public PriorityTask(final int priority, final Callable<T> callable)
+		public PriorityTask(int priority, final Callable<T> callable)
 		{
 			super(callable);
 			this.priority = priority;
@@ -89,8 +102,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		@Override
 		public int compareTo(final PriorityTask<T> o)
 		{
-			final long diff = o.priority - priority;
-			return 0 == diff ? 0 : 0 > diff ? -1 : 1;
+			return Long.signum(o.priority - priority);
 		}
 	}
 
