@@ -3,7 +3,7 @@ package org.knowtiphy.utils;
 //import com.mcdermottroe.apple.OSXKeychain;
 //import com.mcdermottroe.apple.OSXKeychainException;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,8 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
-
-/* Hello, world */
 
 /**
  * @author graham

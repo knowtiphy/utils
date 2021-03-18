@@ -82,3 +82,6 @@ fabric.properties
 /CppApplication_2/dist/
 /tags/build/
 /tags/dist/
+/CppApplication_3/build/
+/CppApplication_3/dist/
+/mavenproject1/target/

@@ -16,6 +16,9 @@ import java.util.Set;
  */
 public class NameSource
 {
+    public final static String BASE = "http://www.knowtiphy.org/";
+    public final static String NBASE = BASE + "name/";
+
     private final String base;
     private final Set<String> avoid;
     private long count;
@@ -40,6 +43,11 @@ public class NameSource
     public NameSource(String base)
     {
         this(base, 0);
+    }
+
+    public NameSource()
+    {
+        this(NBASE, 0);
     }
 
     public String get()
