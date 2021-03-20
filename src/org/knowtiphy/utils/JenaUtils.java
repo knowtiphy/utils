@@ -123,6 +123,11 @@ public class JenaUtils
 		return listSubjectsWithProperty(model, predicate, object).next();
 	}
 
+	public static Resource listTypes(Model model, String type)
+	{
+		return listSubjectsWithProperty(model, RDF.type.toString(), type).next();
+	}
+
 	public static boolean getB(RDFNode node)
 	{
 		return node.asLiteral().getBoolean();
@@ -297,17 +302,17 @@ public class JenaUtils
 	{
 		return createRDFSModel(ModelFactory.createDefaultModel(), subClasses);
 	}
-	public final static void addSubClasses(Model model, Map<String, String> subClasses)
+	public static void addSubClasses(Model model, Map<String, String> subClasses)
 	{
 		subClasses.forEach((sub, sup) -> addSubClass(model, sub, sup));
 	}
 
-	public final static void collect(Model model, String id, String prop, Consumer<RDFNode> f)
+	public static void collect(Model model, String id, String prop, Consumer<RDFNode> f)
 	{
-		JenaUtils.listObjectsOfProperty(model, id, prop).forEachRemaining(f::accept);
+		JenaUtils.listObjectsOfProperty(model, id, prop).forEachRemaining(f);
 	}
 
-	public final static <T> Collection<T> collect(Collection<T> result, Model model,
+	public static <T> Collection<T> collect(Collection<T> result, Model model,
 										 String id, String prop, Function<RDFNode, T> f)
 	{
 		JenaUtils.listObjectsOfProperty(model, id, prop).forEachRemaining(x -> result.add(f.apply(x)));
