@@ -9,23 +9,23 @@ package org.knowtiphy.utils;
  */
 public class Pair<A, B>
 {
-    private final A fst;
-    private final B snd;
+    private final A first;
+    private final B second;
 
-    public Pair(A fst, B snd)
+    public Pair(A first, B second)
     {
-        this.fst = fst;
-        this.snd = snd;
+        this.first = first;
+        this.second = second;
     }
 
-    public A fst()
+    public A getFirst()
     {
-        return fst;
+        return first;
     }
 
-    public B snd()
+    public B getSecond()
     {
-        return snd;
+        return second;
     }
 
     @Override
@@ -41,25 +41,25 @@ public class Pair<A, B>
         }
 		@SuppressWarnings("unchecked")
 		Pair<A, B> other = (Pair<A, B>) obj;
-        if (this.fst != other.fst() && (this.fst == null || !this.fst.equals(other.fst())))
+        if (this.first != other.getFirst() && (this.first == null || !this.first.equals(other.getFirst())))
         {
             return false;
         }
-        return this.snd == other.snd() || (this.snd != null && this.snd.equals(other.snd()));
+        return this.second == other.getSecond() || (this.second != null && this.second.equals(other.getSecond()));
     }
 
     @Override
     public int hashCode()
     {
         int hash = 7;
-        hash = 83 * hash + (this.fst != null ? this.fst.hashCode() : 0);
-        hash = 83 * hash + (this.snd != null ? this.snd.hashCode() : 0);
+        hash = 83 * hash + (this.first != null ? this.first.hashCode() : 0);
+        hash = 83 * hash + (this.second != null ? this.second.hashCode() : 0);
         return hash;
     }
 
     @Override
     public String toString()
     {
-		return "(" + fst + ", " + snd + ")";
+		return "(" + first + ", " + second + ")";
     }
 }

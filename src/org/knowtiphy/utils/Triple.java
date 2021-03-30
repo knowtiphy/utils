@@ -2,32 +2,19 @@ package org.knowtiphy.utils;
 
 import java.util.Objects;
 
-public class Triple<A, B, C>
+public class Triple<A, B, C> extends Pair<A, B>
 {
-	private final A fst;
-	private final B snd;
-	private final C thd;
+	private final C third;
 
-	public Triple(A fst, B snd, C thd)
+	public Triple(A first, B second, C third)
 	{
-		this.fst = fst;
-		this.snd = snd;
-		this.thd = thd;
+		super(first, second);
+		this.third = third;
 	}
 
-	public A fst()
+	public C getThird()
 	{
-		return fst;
-	}
-
-	public B snd()
-	{
-		return snd;
-	}
-
-	public C thd()
-	{
-		return thd;
+		return third;
 	}
 
 	@Override
@@ -42,18 +29,19 @@ public class Triple<A, B, C>
 			return false;
 		}
 		Triple<?, ?, ?> triple = (Triple<?, ?, ?>) o;
-		return fst.equals(triple.fst) && snd.equals(triple.snd) && thd.equals(triple.thd);
+		return getFirst().equals(triple.getFirst()) && getSecond().equals(triple.getSecond())
+				&& getThird().equals(triple.getThird());
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(fst, snd, thd);
+		return Objects.hash(getFirst(), getSecond(), getThird());
 	}
 
 	@Override
 	public String toString()
 	{
-		return "(" + fst + ", " + snd + ", " + thd + ")";
+		return "(" + getFirst() + ", " + getSecond() + ", " + getThird() + ")";
 	}
 }

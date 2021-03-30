@@ -159,7 +159,6 @@ public class JenaUtils
 
 	public static String getS(Statement stmt)
 	{
-
 		return stmt.getObject().asLiteral().getString();
 	}
 
@@ -195,6 +194,31 @@ public class JenaUtils
 				DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(ZoneId.systemDefault());
 	}
 
+	//	methods to extract objects from RDFNodes
+
+	public static boolean getB(RDFNode node)
+	{
+		return node.asLiteral().getBoolean();
+	}
+
+	public static int getI(RDFNode node)
+	{
+		return node.asLiteral().getInt();
+	}
+
+	public static String getS(RDFNode node)
+	{
+		return node.asLiteral().getString();
+	}
+
+
+	public static ZonedDateTime getDate(RDFNode node)
+	{
+		return ZonedDateTime.parse(node.asLiteral().getLexicalForm(),
+				DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(ZoneId.systemDefault());
+	}
+
+
 	//	apply a function over a list of objects
 	public static void apply(Model model, String s, String p, Consumer<RDFNode> f)
 	{
@@ -209,10 +233,14 @@ public class JenaUtils
 		return result;
 	}
 
-
+	//	TODO --	all the code should work with result sets
 	//	methods to extract values from result sets
-	//	TODO -- not sure these are really necessary
-	//	TODO -- they are also wrong since they don't close the result sets
+
+	public static <T> Collection<T> collect(ResultSet resultSet, Collection<T> result, Function<QuerySolution, T> f)
+	{
+		resultSet.forEachRemaining(soln -> result.add(f.apply(soln)));
+		return result;
+	}
 
 	public static <T> T single(ResultSet resultSet, Function<QuerySolution, T> f)
 	{
