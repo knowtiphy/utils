@@ -146,17 +146,6 @@ public class JenaUtils
 	//	These methods all assume the literal exists -- if not a NoSuchElementException is
 	//	thrown by Jena
 
-	public static boolean getB(Statement stmt)
-	{
-		return stmt.getObject().asLiteral().getBoolean();
-	}
-
-	public static int getI(Statement stmt)
-	{
-
-		return stmt.getObject().asLiteral().getInt();
-	}
-
 	public static String getS(Statement stmt)
 	{
 		return stmt.getObject().asLiteral().getString();
@@ -186,14 +175,6 @@ public class JenaUtils
 		return getOL(model, s, p, Literal::getString);
 	}
 
-	//	methods to extract objects from query solutions
-
-	public static ZonedDateTime getDate(QuerySolution soln, String var)
-	{
-		return ZonedDateTime.parse(soln.get(var).asLiteral().getLexicalForm(),
-				DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(ZoneId.systemDefault());
-	}
-
 	//	methods to extract objects from RDFNodes
 
 	public static boolean getB(RDFNode node)
@@ -211,13 +192,11 @@ public class JenaUtils
 		return node.asLiteral().getString();
 	}
 
-
 	public static ZonedDateTime getDate(RDFNode node)
 	{
 		return ZonedDateTime.parse(node.asLiteral().getLexicalForm(),
 				DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(ZoneId.systemDefault());
 	}
-
 
 	//	apply a function over a list of objects
 	public static void apply(Model model, String s, String p, Consumer<RDFNode> f)
@@ -244,8 +223,35 @@ public class JenaUtils
 
 	public static <T> T single(ResultSet resultSet, Function<QuerySolution, T> f)
 	{
-		return f.apply(resultSet.next());
+		assert (resultSet.hasNext());
+		var result = f.apply(resultSet.next());
+		assert (!resultSet.hasNext());
+		return result;
 	}
+
+	//	methods to extract objects from query solutions
+
+	public static boolean getB(QuerySolution soln, String var)
+	{
+		return soln.get(var).asLiteral().getBoolean();
+	}
+
+	public static byte[] getBA(QuerySolution soln, String var)
+	{
+		return (byte[]) soln.get(var).asLiteral().getValue();
+	}
+
+	public static String getS(QuerySolution soln, String var)
+	{
+		return soln.get(var).asLiteral().getString();
+	}
+
+	public static ZonedDateTime getDate(QuerySolution soln, String var)
+	{
+		return ZonedDateTime.parse(soln.get(var).asLiteral().getLexicalForm(),
+				DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(ZoneId.systemDefault());
+	}
+
 
 	//	here because its used in conjunction with fetching RDF data
 	public static GregorianCalendar fromDate(ZonedDateTime date)

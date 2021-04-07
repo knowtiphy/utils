@@ -3,6 +3,7 @@ package org.knowtiphy.utils;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
+@FunctionalInterface
 public interface IProcedure
 {
 	void call() throws Exception;
